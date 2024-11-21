@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Lesson Store</title>
+</head>
+<body>
+    <div id="lessonStore">
+        <header>
+            <h1>{{ message }}</h1>
+            <button v-on:click="toggleCheckout">
+                {{ itemsInCart }} 
+                <span class="fa-solid fa-cart-plus"></span> Check Out
+            </button>
+        </header>
+        
+        <main>
+            <!-- Product Section -->
+            <div class="ml-20 mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" v-if="showProducts">
+                <div v-for="lesson in sortedLessons" :key="lesson.id">
+                    <figure>
+                        <img :src="lesson.image" alt="Lesson Image" width="200" height="200">
+                    </figure>
+                    <h2>{{ lesson.title }}</h2>
+                    <p>{{ lesson.description }}</p>
+                    <p>Price: {{ lesson.price }}</p>
+                    
+                    <button v-if="canAddToCart(lesson)" @click="addToCart(lesson)">Add to Cart</button>
+                    <button v-else disabled>Out of Stock</button>
+                    
+                    <span v-if="lessonsLeft(lesson) === 0">All sold out!</span>
+                    <span v-else-if="lessonsLeft(lesson) < 5">Only {{ lessonsLeft(lesson) }} left!</span>
+                    
+                    <div>
+                        <span v-for="n in lesson.rating">★</span>
+                        <span v-for="n in 5 - lesson.rating">☆</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Checkout Section -->
+            <div v-else>
+                <h1>Checkout Page</h1>
+                <p><strong>First Name:</strong> <input v-model.trim="order.firstName" /></p>
+                <p><strong>Last Name:</strong> <input v-model.trim="order.lastName" /></p>
+                <p><strong>Email:</strong> <input v-model.trim="order.email" /></p>
+                <p><strong>Payment Method:</strong>
+                    <input type="radio" id="credit" value="Credit Card" v-model="order.paymentMethod">
+                    <label for="credit">Credit Card</label>
+                    <input type="radio" id="paypal" value="PayPal" v-model="order.paymentMethod">
+                    <label for="paypal">PayPal</label>
+                </p>
+                <h2>Order Summary</h2>
+                <p>Lessons in Cart: {{ cart.length }}</p>
+                <p>Total Price: {{ totalPrice }}</p>
+                <button @click="placeOrder">Place Order</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const lessons = [
+            { id: 1, title: "Math 101", description: "Basic Math Lessons", price: 50, availableInventory: 5, rating: 4, image: "https://via.placeholder.com/200" },
+            { id: 2, title: "History Basics", description: "World History Overview", price: 75, availableInventory: 3, rating: 5, image: "https://via.placeholder.com/200" },
+            { id: 3, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "https://via.placeholder.com/200" },
+        ];
+
+        new Vue({
+            el: '#lessonStore',
+            data: {
+                message: 'Welcome to the Lesson Store!',
+                showProducts: true,
+                lessons: lessons,
+                cart: [],
+                order: {
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    paymentMethod: ''
+                }
+            },
+            methods: {
+                toggleCheckout() {
+                    this.showProducts = !this.showProducts;
+                },
+                addToCart(lesson) {
+                    this.cart.push(lesson.id);
+                },
+                canAddToCart(lesson) {
+                    return lesson.availableInventory > this.cartCount(lesson.id);
+                },
+                cartCount(id) {
+                    return this.cart.filter(item => item === id).length;
+                },
+                lessonsLeft(lesson) {
+                    return lesson.availableInventory - this.cartCount(lesson.id);
+                },
+                placeOrder() {
+                    alert("Order placed successfully!");
+                    this.cart = [];
+                    this.order = { firstName: '', lastName: '', email: '', paymentMethod: '' };
+                    this.showProducts = true;
+                }
+            },
+            computed: {
+                itemsInCart() {
+                    return this.cart.length || '';
+                },
+                sortedLessons() {
+                    return this.lessons.sort((a, b) => a.price - b.price);
+                },
+                totalPrice() {
+                    return this.cart.reduce((sum, id) => {
+                        const lesson = this.lessons.find(l => l.id === id);
+                        return sum + lesson.price;
+                    }, 0);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
