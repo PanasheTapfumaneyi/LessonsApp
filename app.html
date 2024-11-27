@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="lessons.js"></script>
     <title>Lesson Store</title>
     <style>
         body {
@@ -45,6 +46,7 @@
            <!-- Product Section -->
 <div class="ml-96 w-2/3 rounded-lg mt-32 grid grid-cols-3 gap-1 auto-rows-max" v-if="showProducts">
     <div class="bg-white w-10/12 m-2 p-1 rounded-lg" v-for="lesson in sortedLessons" :key="lesson.id">
+        <div>
         <figure class="flex justify-center items-center">
             <img :src="lesson.image" alt="Lesson Image" width="200" height="200">
         </figure>
@@ -68,6 +70,7 @@
 
         <span v-if="lessonsLeft(lesson) === 0">All sold out!</span>
         <span v-else-if="lessonsLeft(lesson) < 5">Only {{ lessonsLeft(lesson) }} left!</span>
+        </div>
     </div>
 </div>
 
@@ -176,14 +179,14 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
     </div>
 
     <script>
-        const lessons = [
-            { id: 1, title: "Math 101", description: "Basic Math Lessons", price: 50, availableInventory: 5, rating: 4, image: "/assets/math.png" },
-            { id: 2, title: "History Basics", description: "World History Overview", price: 75, availableInventory: 3, rating: 5, image: "/assets/history.png" },
-            { id: 3, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-            { id: 4, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-            { id: 5, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-            { id: 6, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-        ];
+        // const lessons = [
+        //     { id: 1, title: "Math 101", description: "Basic Math Lessons", price: 50, availableInventory: 5, rating: 4, image: "/assets/math.png" },
+        //     { id: 2, title: "History Basics", description: "World History Overview", price: 75, availableInventory: 3, rating: 5, image: "/assets/history.png" },
+        //     { id: 3, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
+        //     { id: 4, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
+        //     { id: 5, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
+        //     { id: 6, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
+        // ];
 
         new Vue({
     el: '#lessonStore',
