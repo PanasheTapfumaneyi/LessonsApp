@@ -43,8 +43,42 @@
         
         
         <main>
+            <!-- <div>
+                <label for="sort">Sort by:</label>
+                <select id="sort" v-model="sortOption" @change="sortLessons">
+                    <option value="subjectAsc">Subject (A-Z)</option>
+                    <option value="subjectDesc">Subject (Z-A)</option>
+                    <option value="locationAsc">Location (A-Z)</option>
+                    <option value="locationDesc">Location (Z-A)</option>
+                    <option value="priceAsc">Price (Low to High)</option>
+                    <option value="priceDesc">Price (High to Low)</option>
+                    <option value="availabilityAsc">Availability (Low to High)</option>
+                    <option value="availabilityDesc">Availability (High to Low)</option>
+                </select>
+            </div> -->
            <!-- Product Section -->
 <div class="ml-96 w-2/3 rounded-lg mt-32 grid grid-cols-3 gap-1 auto-rows-max" v-if="showProducts">
+        <!-- Sorting Criteria -->
+        <label>Sort by:</label>
+        <div>
+            <input type="radio" id="subject" value="title" v-model="sortCriteria">
+            <label for="subject">Subject</label>
+    
+            <input type="radio" id="location" value="location" v-model="sortCriteria">
+            <label for="location">Location</label>
+    
+            <input type="radio" id="price" value="price" v-model="sortCriteria">
+            <label for="price">Price</label>
+    
+            <input type="radio" id="availability" value="availableInventory" v-model="sortCriteria">
+            <label for="availability">Availability</label>
+        </div>
+    
+        <!-- Sorting Order (Ascending / Descending) -->
+        <div>
+            <button @click="sortOrder = 'asc'">Ascending</button>
+            <button @click="sortOrder = 'desc'">Descending</button>
+        </div>
     <div class="bg-white w-10/12 m-2 p-1 rounded-lg" v-for="lesson in sortedLessons" :key="lesson.id">
         <div>
         <figure class="flex justify-center items-center">
@@ -179,30 +213,41 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
     </div>
 
     <script>
-        // const lessons = [
-        //     { id: 1, title: "Math 101", description: "Basic Math Lessons", price: 50, availableInventory: 5, rating: 4, image: "/assets/math.png" },
-        //     { id: 2, title: "History Basics", description: "World History Overview", price: 75, availableInventory: 3, rating: 5, image: "/assets/history.png" },
-        //     { id: 3, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-        //     { id: 4, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-        //     { id: 5, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-        //     { id: 6, title: "Intro to Programming", description: "Learn programming fundamentals", price: 100, availableInventory: 2, rating: 4, image: "/assets/code.png" },
-        // ];
 
-        new Vue({
+     let webstore =   new Vue({
     el: '#lessonStore',
     data: {
         message: 'Welcome to the Lesson Store!',
         showProducts: true,
         showCartPage: false,
-        lessons: lessons,
+        lessons: [],
         cart: [],
         order: {
             firstName: '',
             lastName: '',
             email: '',
             paymentMethod: ''
-        }
+        },
+        sortCriteria: 'subject', 
+        sortOrder: 'asc' 
     },
+    created: function() {
+                    
+                     fetch("http://localhost:4000/collections/lessons").then(
+                        function(response) {
+                             response.json().then(
+                                 function(json) {
+                                     //console.log(json);
+                                     // note that we used ‘webstore.products’
+                                    // instead of 'this.products’
+                                     webstore.lessons = json;
+                                     //console.log(webstore.products);
+                                     
+                                 }
+                             )
+                        }
+                     );
+        },
     methods: {
         toggleCheckout() {
             this.showProducts = false;
@@ -230,6 +275,16 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
             this.order = { firstName: '', lastName: '', email: '', paymentMethod: '' };
             this.showProducts = true;
             this.showCartPage = false;
+        },
+        fetchLessons() {
+            fetch("http://localhost:3000/collection/lessons")
+                .then(response => response.json())
+                .then(data => {
+                    this.lessons = data; // Populate the lessons array
+                })
+                .catch(err => {
+                    console.error("Error fetching lessons:", err);
+                });
         }
     },
     computed: {
@@ -240,7 +295,20 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
             return this.cart.map(id => this.lessons.find(lesson => lesson.id === id));
         },
         sortedLessons() {
-            return this.lessons.sort((a, b) => a.price - b.price);
+            return [...this.lessons].sort((a, b) => {
+                let comparison = 0;
+                const field = this.sortCriteria;
+
+                // Handle the comparison for different fields
+                if (typeof a[field] === 'string') {
+                    comparison = a[field].localeCompare(b[field]);
+                } else {
+                    comparison = a[field] - b[field];
+                }
+
+                // Reverse comparison for descending order
+                return this.sortOrder === 'desc' ? -comparison : comparison;
+            });
         },
         totalPrice() {
             return this.cart.reduce((sum, id) => {
