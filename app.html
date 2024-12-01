@@ -145,58 +145,33 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
 <h1 class="text-2xl font-bold mb-6">Checkout Page</h1>
 <form class="w-full max-w-md space-y-4">
     <div>
-        <label class="block font-semibold mb-1" for="firstName">First Name:</label>
+        <label class="block font-semibold mb-1" for="name">Full Name:</label>
         <input 
-            id="firstName" 
-            v-model.trim="order.firstName" 
+            id="name" 
+            v-model.trim="order.name" 
             class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" 
         />
     </div>
     <div>
-        <label class="block font-semibold mb-1" for="lastName">Last Name:</label>
+        <label class="block font-semibold mb-1" for="phone">Phone Number:</label>
         <input 
-            id="lastName" 
-            v-model.trim="order.lastName" 
+            id="phone" 
+            v-model.trim="order.phone" 
+            type="phone" 
             class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" 
         />
     </div>
-    <div>
-        <label class="block font-semibold mb-1" for="email">Email:</label>
-        <input 
-            id="email" 
-            v-model.trim="order.email" 
-            type="email" 
-            class="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" 
-        />
-    </div>
-    <div>
-        <label class="block font-semibold mb-2">Payment Method:</label>
-        <div class="flex items-center space-x-4">
-            <div>
-                <input 
-                    type="radio" 
-                    id="credit" 
-                    value="Credit Card" 
-                    v-model="order.paymentMethod" 
-                    class="mr-2"
-                />
-                <label for="credit">Credit Card</label>
-            </div>
-            <div>
-                <input 
-                    type="radio" 
-                    id="paypal" 
-                    value="PayPal" 
-                    v-model="order.paymentMethod" 
-                    class="mr-2"
-                />
-                <label for="paypal">PayPal</label>
-            </div>
-        </div>
-    </div>
+
     <div>
         <h2 class="text-xl font-bold mb-2">Order Summary</h2>
-        <p>Lessons in Cart: {{ cart.length }}</p>
+        <div 
+        v-for="lesson in cartItems" 
+        :key="lesson.id" 
+        class="p-4 bg-white shadow-md rounded-lg mb-4">     
+        <h3 class="text-xl font-bold">{{ lesson.title }}</h3>
+
+    </div>
+        <p>Lessons in Cart: {{ cart.length }} </p>
         <p>Total Price: {{ totalPrice }}</p>
     </div>
     <button 
@@ -223,9 +198,9 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
         lessons: [],
         cart: [],
         order: {
-            firstName: '',
+            name: '',
             lastName: '',
-            email: '',
+            phone: '',
             paymentMethod: ''
         },
         sortCriteria: 'subject', 
@@ -270,22 +245,37 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
             return lesson.availableInventory - this.cartCount(lesson.id);
         },
         placeOrder() {
-            alert("Order placed successfully!");
-            this.cart = [];
-            this.order = { firstName: '', lastName: '', email: '', paymentMethod: '' };
-            this.showProducts = true;
-            this.showCartPage = false;
-        },
-        fetchLessons() {
-            fetch("http://localhost:3000/collection/lessons")
-                .then(response => response.json())
-                .then(data => {
-                    this.lessons = data; // Populate the lessons array
-                })
-                .catch(err => {
-                    console.error("Error fetching lessons:", err);
-                });
-        }
+        const orderDetails = {
+            name: this.order.name,
+            phone: this.order.phone,
+            cart: this.cart
+        };
+
+        fetch("http://localhost:4000/collections/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(orderDetails)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(`Error: ${data.error}`);
+            } else {
+                alert("Order placed successfully!");
+                this.cart = [];
+                this.order = { name: '', phone: '' };
+                this.showProducts = true;
+                this.showCartPage = false;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to place order");
+        });
+    }
+
     },
     computed: {
         itemsInCart() {
