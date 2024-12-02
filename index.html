@@ -27,22 +27,21 @@
           <h1 class="text-3xl font-bold text-black">{{ message }}</h1>
           <div class="flex items-center space-x-4">
             <ul class="flex text-lg font-semibold text-gray-700">
-                <!-- Link to cart page -->
+              <!-- Link to cart page -->
               <li>
-                <button v-if="showCartPage || itemsInCart > 0" @click="toggleCartPage" class="hover:text-blue-500"> {{ itemsInCart }} <span class="fa-solid fa-cart-plus"></span> Cart</button>
-                <button v-else disabled @click="toggleCartPage" class="hover:text-blue-500"> {{ itemsInCart }} <span class="fa-solid fa-cart-plus"></span> Cart</button>
-                <!-- <a  href="#" v-if="itemsInCart > 0" @click="toggleCartPage" class="hover:text-blue-500"> Cart </a>
-                <a  href="#" v-else disabled @click="toggleCartPage" class="hover:text-blue-500"> Cart </a> -->
+                <button v-if="showCartPage || itemsInCart > 0" @click="toggleCartPage" class="hover:text-blue-500"> {{ itemsInCart }}
+                  <span class="fa-solid fa-cart-plus"></span> Cart </button>
+                <button v-else disabled @click="toggleCartPage" class="hover:text-blue-500"> {{ itemsInCart }}
+                  <span class="fa-solid fa-cart-plus"></span> Cart </button>
+                <!-- <a  href="#" v-if="itemsInCart > 0" @click="toggleCartPage" class="hover:text-blue-500"> Cart </a><a  href="#" v-else disabled @click="toggleCartPage" class="hover:text-blue-500"> Cart </a> -->
               </li>
             </ul>
-
           </div>
         </nav>
       </header>
       <main>
         <!-- Search bar -->
-            <input type="text" v-model="searchQuery" placeholder="Search lessons" class=" mt-10 ml-56  w-1/4 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
-
+        <input type="text" v-model="searchQuery" placeholder="Search lessons" class=" mt-10 ml-56  w-1/4 px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <!-- Product Section -->
         <div class="ml-96 w-2/3 rounded-lg mt-32 grid grid-cols-3 gap-1 auto-rows-max" v-if="showProducts">
           <!-- Sorting choices -->
@@ -78,8 +77,8 @@
                 <span v-for="n in 5 - lesson.rating">☆</span>
               </div>
               <!-- Add to cart button -->
-            <button class="w-40 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-if="canAddToCart(lesson)" v-on:click="addToCart(lesson)"> Add to Cart </button>
-            <button class="w-40 px-6 py-2 bg-green-200 hover:bg-green-400 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-else disabled>Add to Cart</button>
+              <button class="w-40 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-if="canAddToCart(lesson)" v-on:click="addToCart(lesson)"> Add to Cart </button>
+              <button class="w-40 px-6 py-2 bg-green-200 hover:bg-green-400 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-else disabled>Add to Cart</button>
               <span v-if="lessonsLeft(lesson) === 0">All sold out!</span>
               <span v-else-if="lessonsLeft(lesson) < 5">Only {{ lessonsLeft(lesson) }} left! </span>
             </div>
@@ -87,9 +86,7 @@
         </div>
         <!-- Cart Page -->
         <div v-if="showCartPage" class="flex flex-col justify-center items-center h-screen p-4">
-          
-
-            <h2 class="text-2xl font-bold mb-4">Your Cart</h2>
+          <h2 class="text-2xl font-bold mb-4">Your Cart</h2>
           <!-- Display cart items if there are items in the cart -->
           <div v-if="cartItems.length > 0" class="w-full max-w-md">
             <div v-for="lesson in cartItems" :key="lesson.id" class="p-4 bg-white shadow-md rounded-lg mb-4">
@@ -104,13 +101,13 @@
           <div v-else>
             <p>Your cart is empty!</p>
           </div>
-                                <!-- Checkout Button -->
-                                <button class="w-1/5 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-if="itemsInCart > 0" @click="toggleCheckout">
-                                    {{ itemsInCart }}
-                                    <span class="fa-solid fa-cart-plus"></span> Check Out </button>
-                                  <button class="w-1/5 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-else disabled @click="toggleCheckout">
-                                    {{ itemsInCart }}
-                                    <span class="fa-solid fa-cart-plus"></span> Check Out </button>
+          <!-- Checkout Button -->
+          <button class="w-1/5 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-if="itemsInCart > 0" @click="toggleCheckout">
+            {{ itemsInCart }}
+            <span class="fa-solid fa-cart-plus"></span> Check Out </button>
+          <button class="w-1/5 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md transition-all duration-200" v-else disabled @click="toggleCheckout">
+            {{ itemsInCart }}
+            <span class="fa-solid fa-cart-plus"></span> Check Out </button>
         </div>
         <!-- Checkout Page -->
         <div v-if="!showProducts && !showCartPage" class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4">
@@ -142,11 +139,11 @@
       </main>
     </div>
     <script>
-    // Creating vue instance
+      // Creating vue instance
       let webstore = new Vue({
         el: '#lessonStore',
         data: {
-            // Default application data
+          // Default application data
           message: 'Welcome to the Lesson Store!',
           showProducts: true,
           showCartPage: false,
@@ -188,38 +185,38 @@
               this.phoneError = '';
             }
           },
-        // Toggle between products and checkout pages
+          // Toggle between products and checkout pages
           toggleCheckout() {
             this.showProducts = false;
             this.showCartPage = false;
           },
-        //   Toggle cart visibility
+          //   Toggle cart visibility
           toggleCartPage() {
             this.showCartPage = !this.showCartPage;
             this.showProducts = !this.showProducts;
           },
-        //   Add lesson to cart via id
+          //   Add lesson to cart via id
           addToCart(lesson) {
             this.cart.push(lesson.id);
           },
-        //   Remove lesson from cart via id
+          //   Remove lesson from cart via id
           removeFromCart(id) {
             const index = this.cart.indexOf(id);
             if (index !== -1) this.cart.splice(index, 1);
           },
-        //   Check if lesson is eligable to be added to cart if it is still in stock
+          //   Check if lesson is eligable to be added to cart if it is still in stock
           canAddToCart(lesson) {
             return lesson.availableInventory > this.cartCount(lesson.id);
           },
-        //   Count the lessons in the cart by the id
+          //   Count the lessons in the cart by the id
           cartCount(id) {
             return this.cart.filter(item => item === id).length;
           },
-        //   Count the remaining lessons in stock
+          //   Count the remaining lessons in stock
           lessonsLeft(lesson) {
             return lesson.availableInventory - this.cartCount(lesson.id);
           },
-        //   Submit order details and send to the server
+          //   Submit order details and send to the server
           placeOrder() {
             const orderDetails = {
               name: this.order.name,
@@ -256,26 +253,26 @@
           }
         },
         computed: {
-            // Calculate number of items in the cart
+          // Calculate number of items in the cart
           itemsInCart() {
             return this.cart.length || '';
           },
-        //   Display list of items in the cart
+          //   Display list of items in the cart
           cartItems() {
             return this.cart.map(id => this.lessons.find(lesson => lesson.id === id));
           },
-        //   Check if form details are valid
+          //   Check if form details are valid
           isFormValid() {
             return this.order.name.trim() !== "" && this.order.phone.trim() !== "" && this.nameError === '' && this.phoneError === '';
           },
-        //   Filter the lessons based on the search 
+          //   Filter the lessons based on the search 
           filteredLessons() {
             return this.sortedLessons.filter(lesson => {
               const searchQuery = this.searchQuery.toLowerCase();
               return (lesson.title.toLowerCase().includes(searchQuery) || lesson.description.toLowerCase().includes(searchQuery) || lesson.location.toLowerCase().includes(searchQuery) || lesson.price.toString().includes(searchQuery) || lesson.availableInventory.toString().includes(searchQuery));
             });
           },
-        //   Sort lessons function
+          //   Sort lessons function
           sortedLessons() {
             return [...this.lessons].sort((a, b) => {
               let comparison = 0;
@@ -289,7 +286,7 @@
               return this.sortOrder === 'desc' ? -comparison : comparison;
             });
           },
-        //   Calculate the total price
+          //   Calculate the total price
           totalPrice() {
             return this.cart.reduce((sum, id) => {
               const lesson = this.lessons.find(l => l.id === id);
