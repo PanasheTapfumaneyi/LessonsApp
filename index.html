@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <div class="h-screen bg-[url('/assets/class.jpg')] bg-cover bg-center" id="lessonStore">
+    <div class="h-screen bg-[url('assets/class.jpg')] bg-cover bg-center" id="lessonStore">
         <header class="bg-gray-100 shadow-md p-4">
             <!-- Navigation Bar -->
             <nav class="flex justify-between items-center">
@@ -222,7 +222,7 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
     },
     created: function() {
                     
-                     fetch("http://localhost:4000/collections/lessons").then(
+                     fetch("https://lessonsbackend-1.onrender.com/collections/lessons").then(
                         function(response) {
                              response.json().then(
                                  function(json) {
@@ -289,7 +289,7 @@ class="flex flex-col justify-center items-center h-screen bg-gray-100 p-4"
             cart: this.cart
         };
 
-        fetch("http://localhost:4000/collections/orders", {
+        fetch("https://lessonsbackend-1.onrender.com/collections/orders", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
